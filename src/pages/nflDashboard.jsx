@@ -11,10 +11,20 @@ import {
   Button,
   Grid,
 } from "@mui/material";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 
 const COLORS = ["#1976d2", "#ff6d00"];
-
 const PAGE_SIZE = 15;
 
 export default function NflScheduleDashboard() {
@@ -48,7 +58,6 @@ export default function NflScheduleDashboard() {
   const paginatedWeeks = weekKeys.slice(startIndex, startIndex + PAGE_SIZE);
   const totalPages = Math.ceil(weekKeys.length / PAGE_SIZE);
 
-  // Helper to render NFL logos
   const renderLogo = (teamAbbr) => {
     const LogoComponent = NFLIcons[teamAbbr];
     return LogoComponent ? (
@@ -67,7 +76,7 @@ export default function NflScheduleDashboard() {
   };
 
   return (
-    <Box maxWidth="900px" mx="auto" p={3}>
+    <Box maxWidth="900px" mx="auto" p={2}>
       {paginatedWeeks.map((week) => (
         <Box key={week} mb={4}>
           <Typography variant="h5" fontWeight="bold" mb={2} align="center">
@@ -79,16 +88,16 @@ export default function NflScheduleDashboard() {
             const awayPred = Math.round(game.away_pred_score);
             const gamePlayed =
               game.home_score !== null && game.away_score !== null;
-            const isCorrect = gamePlayed
-              ? game.predicted_winner_correct
-              : null;
+            const isCorrect = gamePlayed ? game.predicted_winner_correct : null;
 
             return (
               <Card
                 key={game.game_id}
                 sx={{
                   display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
                   alignItems: "center",
+                  justifyContent: "space-between",
                   p: 2,
                   mb: 2,
                   borderRadius: 2,
@@ -103,7 +112,12 @@ export default function NflScheduleDashboard() {
                 onClick={() => setSelectedGame(game)}
               >
                 {/* Home Team */}
-                <Box display="flex" alignItems="center" width="40%">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  mb={{ xs: 1, sm: 0 }}
+                  width={{ xs: "100%", sm: "40%" }}
+                >
                   {renderLogo(game.home_team)}
                   <Box ml={1}>
                     <Typography variant="subtitle1" fontWeight="bold">
@@ -118,21 +132,21 @@ export default function NflScheduleDashboard() {
                   </Box>
                 </Box>
 
-                {/* Actual Score + Spread/O/U */}
+                {/* Middle Score */}
                 <Box
-                  width="20%"
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
                   alignItems="center"
+                  mb={{ xs: 1, sm: 0 }}
+                  width={{ xs: "100%", sm: "20%" }}
                 >
                   <Typography variant="h4" fontWeight="bold">
-                    {gamePlayed
-                      ? `${game.home_score} - ${game.away_score}`
-                      : "-"}
+                    {gamePlayed ? `${game.home_score} - ${game.away_score}` : "-"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {game.away_team} {game.spread_line > 0 ? `+${game.spread_line}` : game.spread_line}
+                    {game.away_team}{" "}
+                    {game.spread_line > 0 ? `+${game.spread_line}` : game.spread_line}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     O/U: {game.total_line}
@@ -143,8 +157,8 @@ export default function NflScheduleDashboard() {
                 <Box
                   display="flex"
                   alignItems="center"
-                  width="40%"
-                  justifyContent="flex-end"
+                  justifyContent={{ xs: "center", sm: "flex-end" }}
+                  width={{ xs: "100%", sm: "40%" }}
                 >
                   <Box textAlign="right" mr={1}>
                     <Typography variant="subtitle1" fontWeight="bold">
@@ -160,7 +174,7 @@ export default function NflScheduleDashboard() {
                   {renderLogo(game.away_team)}
                 </Box>
 
-                <Box ml={2}>
+                <Box mt={{ xs: 1, sm: 0 }} ml={{ sm: 2 }}>
                   {gamePlayed ? (
                     <Chip
                       label={isCorrect ? "✅ Correct" : "❌ Wrong"}
@@ -168,11 +182,7 @@ export default function NflScheduleDashboard() {
                       size="medium"
                     />
                   ) : (
-                    <Chip
-                      label="⏳ Upcoming"
-                      color="warning"
-                      size="medium"
-                    />
+                    <Chip label="⏳ Upcoming" color="warning" size="medium" />
                   )}
                 </Box>
               </Card>
@@ -183,7 +193,7 @@ export default function NflScheduleDashboard() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="center" mb={5}>
+        <Box display="flex" justifyContent="center" mb={5} flexWrap="wrap">
           <Pagination
             count={totalPages}
             page={page}
@@ -193,7 +203,7 @@ export default function NflScheduleDashboard() {
         </Box>
       )}
 
-      {/* Game Stats Modal */}
+      {/* Modal */}
       <Modal
         open={!!selectedGame}
         onClose={() => setSelectedGame(null)}
@@ -209,7 +219,7 @@ export default function NflScheduleDashboard() {
             bgcolor: "background.paper",
             borderRadius: 2,
             boxShadow: 24,
-            p: 4,
+            p: 3,
             maxHeight: "90vh",
             overflowY: "auto",
           }}
@@ -237,8 +247,14 @@ export default function NflScheduleDashboard() {
               </Typography>
 
               {/* Scores */}
-              <Box display="flex" justifyContent="center" mb={4}>
-                <Box textAlign="center" mx={3}>
+              <Box
+                display="flex"
+                flexDirection={{ xs: "column", sm: "row" }}
+                justifyContent="center"
+                gap={2}
+                mb={4}
+              >
+                <Box textAlign="center">
                   <Typography variant="h4" fontWeight="bold">
                     {selectedGame.home_score ?? "-"}
                   </Typography>
@@ -247,7 +263,7 @@ export default function NflScheduleDashboard() {
                     QB: {selectedGame.home_qb_name}
                   </Typography>
                 </Box>
-                <Box textAlign="center" mx={3}>
+                <Box textAlign="center">
                   <Typography variant="h4" fontWeight="bold">
                     {selectedGame.away_score ?? "-"}
                   </Typography>
@@ -258,57 +274,41 @@ export default function NflScheduleDashboard() {
                 </Box>
               </Box>
 
-              {/* Predictions */}
-              <Box display="flex" justifyContent="center" mb={4}>
-                <Box textAlign="center" mx={3}>
-                  <Typography variant="body1" color="text.secondary">
-                    {Math.round(selectedGame.home_pred_score)}
-                  </Typography>
-                </Box>
-                <Box textAlign="center" mx={3}>
-                  <Typography variant="body1" color="text.secondary">
-                    {Math.round(selectedGame.away_pred_score)}
-                  </Typography>
-                </Box>
-              </Box>
-
               {/* Odds Section */}
               <Box mt={3} mb={2}>
                 <Typography variant="h6" textAlign="center" gutterBottom>
                   Betting Odds
                 </Typography>
-                <Box display="flex" justifyContent="center">
-                  <Grid container spacing={2} sx={{ maxWidth: 500 }}>
-                    <Grid item xs={6}>
-                      <Card sx={{ p: 2, textAlign: "center" }}>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          {selectedGame.away_team}
-                        </Typography>
-                        <Typography variant="body2">
-                          Moneyline: {selectedGame.away_moneyline}
-                        </Typography>
-                        <Typography variant="body2">
-                          Spread: {selectedGame.spread_line} (
-                          {selectedGame.away_spread_odds})
-                        </Typography>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card sx={{ p: 2, textAlign: "center" }}>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          {selectedGame.home_team}
-                        </Typography>
-                        <Typography variant="body2">
-                          Moneyline: {selectedGame.home_moneyline}
-                        </Typography>
-                        <Typography variant="body2">
-                          Spread: {selectedGame.spread_line} (
-                          {selectedGame.home_spread_odds})
-                        </Typography>
-                      </Card>
-                    </Grid>
+                <Grid container spacing={2} justifyContent="center">
+                  <Grid item xs={12} sm={6}>
+                    <Card sx={{ p: 2, textAlign: "center" }}>
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        {selectedGame.away_team}
+                      </Typography>
+                      <Typography variant="body2">
+                        Moneyline: {selectedGame.away_moneyline}
+                      </Typography>
+                      <Typography variant="body2">
+                        Spread: {selectedGame.spread_line} (
+                        {selectedGame.away_spread_odds})
+                      </Typography>
+                    </Card>
                   </Grid>
-                </Box>
+                  <Grid item xs={12} sm={6}>
+                    <Card sx={{ p: 2, textAlign: "center" }}>
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        {selectedGame.home_team}
+                      </Typography>
+                      <Typography variant="body2">
+                        Moneyline: {selectedGame.home_moneyline}
+                      </Typography>
+                      <Typography variant="body2">
+                        Spread: {selectedGame.spread_line} (
+                        {selectedGame.home_spread_odds})
+                      </Typography>
+                    </Card>
+                  </Grid>
+                </Grid>
                 <Box mt={2} textAlign="center">
                   <Typography variant="body2">
                     Total: {selectedGame.total_line} (O {selectedGame.over_odds} /
@@ -317,12 +317,12 @@ export default function NflScheduleDashboard() {
                 </Box>
               </Box>
 
+              {/* Prediction Stats */}
               <Box mt={4}>
                 <Typography variant="h6" textAlign="center" gutterBottom>
                   Prediction Stats
                 </Typography>
 
-                {/* Bar chart: Predicted vs Actual */}
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart
                     data={[
@@ -347,56 +347,82 @@ export default function NflScheduleDashboard() {
                   </BarChart>
                 </ResponsiveContainer>
 
-                {/* Pie chart: Predicted winner probability (optional) */}
-                {selectedGame.home_pred_score && selectedGame.away_pred_score && (
-                  <Box mt={4}>
-                    <Typography variant="subtitle1" textAlign="center" gutterBottom>
-                      Predicted Winner Share
-                    </Typography>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: selectedGame.home_team, value: selectedGame.home_pred_score },
-                            { name: selectedGame.away_team, value: selectedGame.away_pred_score },
-                          ]}
-                          innerRadius={50}
-                          outerRadius={80}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {[
-                            selectedGame.home_team,
-                            selectedGame.away_team
-                          ].map((entry, index) => (
-                            <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Legend verticalAlign="bottom" height={36}/>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </Box>
-                )}
+                {selectedGame.home_pred_score &&
+                  selectedGame.away_pred_score && (
+                    <Box mt={4}>
+                      <Typography
+                        variant="subtitle1"
+                        textAlign="center"
+                        gutterBottom
+                      >
+                        Predicted Winner Share
+                      </Typography>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie
+                            data={[
+                              {
+                                name: selectedGame.home_team,
+                                value: selectedGame.home_pred_score,
+                              },
+                              {
+                                name: selectedGame.away_team,
+                                value: selectedGame.away_pred_score,
+                              },
+                            ]}
+                            innerRadius={50}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {[selectedGame.home_team, selectedGame.away_team].map(
+                              (entry, index) => (
+                                <Cell
+                                  key={index}
+                                  fill={COLORS[index % COLORS.length]}
+                                />
+                              )
+                            )}
+                          </Pie>
+                          <Legend verticalAlign="bottom" height={36} />
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </Box>
+                  )}
               </Box>
 
-              {/* Optional: summary cards for quick stats */}
-              <Box display="flex" justifyContent="center" gap={2} mt={3} flexWrap="wrap">
-                <Card sx={{ p: 2, minWidth: 120, textAlign: "center" }}>
+              {/* Summary Cards */}
+              <Box
+                display="flex"
+                justifyContent="center"
+                gap={2}
+                mt={3}
+                flexWrap="wrap"
+              >
+                <Card sx={{ p: 2, flex: "1 1 120px", textAlign: "center" }}>
                   <Typography variant="body2">Spread</Typography>
-                  <Typography variant="h6">{selectedGame.spread_line > 0 ? `+${selectedGame.spread_line}` : selectedGame.spread_line}</Typography>
+                  <Typography variant="h6">
+                    {selectedGame.spread_line > 0
+                      ? `+${selectedGame.spread_line}`
+                      : selectedGame.spread_line}
+                  </Typography>
                 </Card>
-                <Card sx={{ p: 2, minWidth: 120, textAlign: "center" }}>
+                <Card sx={{ p: 2, flex: "1 1 120px", textAlign: "center" }}>
                   <Typography variant="body2">O/U</Typography>
                   <Typography variant="h6">{selectedGame.total_line}</Typography>
                 </Card>
-                <Card sx={{ p: 2, minWidth: 120, textAlign: "center" }}>
+                <Card sx={{ p: 2, flex: "1 1 120px", textAlign: "center" }}>
                   <Typography variant="body2">Home Pred</Typography>
-                  <Typography variant="h6">{Math.round(selectedGame.home_pred_score)}</Typography>
+                  <Typography variant="h6">
+                    {Math.round(selectedGame.home_pred_score)}
+                  </Typography>
                 </Card>
-                <Card sx={{ p: 2, minWidth: 120, textAlign: "center" }}>
+                <Card sx={{ p: 2, flex: "1 1 120px", textAlign: "center" }}>
                   <Typography variant="body2">Away Pred</Typography>
-                  <Typography variant="h6">{Math.round(selectedGame.away_pred_score)}</Typography>
+                  <Typography variant="h6">
+                    {Math.round(selectedGame.away_pred_score)}
+                  </Typography>
                 </Card>
               </Box>
 
