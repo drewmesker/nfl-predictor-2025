@@ -23,7 +23,7 @@ export default function NflScheduleDashboard() {
   const [selectedGame, setSelectedGame] = useState(null);
 
   useEffect(() => {
-    fetch("/nfl_2025_predictions.json")
+    fetch(`${process.env.PUBLIC_URL}/nfl_2025_predictions.json`)
       .then((res) => res.json())
       .then((data) => setGames(data.sort((a, b) => a.week - b.week)));
   }, []);
