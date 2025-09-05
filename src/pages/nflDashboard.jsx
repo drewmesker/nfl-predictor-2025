@@ -126,9 +126,6 @@ export default function NflScheduleDashboard() {
                     <Typography variant="body1" fontWeight="bold">
                       {homePred}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      QB: {game.home_qb_name}
-                    </Typography>
                   </Box>
                 </Box>
 
@@ -167,23 +164,8 @@ export default function NflScheduleDashboard() {
                     <Typography variant="body1" fontWeight="bold">
                       {awayPred}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      QB: {game.away_qb_name}
-                    </Typography>
                   </Box>
                   {renderLogo(game.away_team)}
-                </Box>
-
-                <Box mt={{ xs: 1, sm: 0 }} ml={{ sm: 2 }}>
-                  {gamePlayed ? (
-                    <Chip
-                      label={isCorrect ? "✅ Correct" : "❌ Wrong"}
-                      color={isCorrect ? "success" : "error"}
-                      size="medium"
-                    />
-                  ) : (
-                    <Chip label="⏳ Upcoming" color="warning" size="medium" />
-                  )}
                 </Box>
               </Card>
             );
