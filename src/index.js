@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import NflPredictionsDashboard from './pages/nflDashboard';
+import Header from './navbar/Navbar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Header/>
+    <NflPredictionsDashboard/>
   </React.StrictMode>
 );
 
